@@ -23,6 +23,7 @@ Temporary Items
 .apdisk
 
 
+_public/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
