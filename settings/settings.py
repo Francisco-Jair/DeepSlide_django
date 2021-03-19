@@ -147,3 +147,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 ]
+
+# folder for save file dzi
+SLIDE_FOLDER  = os.path.join(STATIC_ROOT, 'open_slide_file')
