@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .core import views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('', views.index, name="index"),
+    # path('<slug>.dzi', views.dzi, name="dzi_image"),
+    # url(r'^slide/(?P<slide_id>\d+)/$', views.dzi),
+    url(r'^(?P<slug>\d+).dzi$', views.dzi),
+    url(r'^(?P<slug>\d+)_files/(?P<level>\d+)/(?P<col>\d+)_(?P<row>\d+)\.(?P<slideformat>jpeg|png)$', views.dztile),
+
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

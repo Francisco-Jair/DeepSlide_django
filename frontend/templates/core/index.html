@@ -1,0 +1,107 @@
+{% load static %}
+
+<!doctype html>
+<meta charset="utf-8">
+<!-- <meta http-equiv="refresh" content="1; URL=''"/> -->
+<title>{{ slide_filename }}</title>
+
+<style type="text/css">
+    html {
+        overflow: hidden;
+    }
+    body {
+        margin: 5px;
+    }
+    div#view {
+        position: absolute;
+        left: 16%;
+        width: 58%;
+        height: 98%;
+        background-color: black;
+        border: 1px solid #000;
+        color: white;
+    }
+    div#view.fullpage {
+        left: 0%;
+        border: 0;
+    }
+    </style>
+
+<div id="view"></div>
+
+
+
+
+{% block footer_javascript_page %}
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/openseadragon.js' %}"></script>
+<script src="{% static 'js/openseadragon-scalebar.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var viewer;
+    var viewer_is_new;
+
+    function open_slide(link) {
+        // Load info objects
+        var image;
+        image=link;
+        // Create viewer if necessary
+        if (!viewer) {
+            viewer = new OpenSeadragon({
+                id: "view",
+                prefixUrl: "{% static 'img/' %}",
+                showNavigator: true,
+                animationTime: 0.5,
+                blendTime: 0.1,
+                constrainDuringPan: true,
+                maxZoomPixelRatio: 2,
+                minPixelRatio: 0.5,
+                minZoomLevel: 1,
+                visibilityRatio: 1,
+                zoomPerScroll: 2
+            });
+            viewer.addHandler("open", function() {
+                viewer.source.minLevel = 8;
+                /* Start zoomed in, then return to home position after
+                   loading.  Workaround for blurry viewport on initial
+                   load (OpenSeadragon #95). */
+                var center = new OpenSeadragon.Point(0.5,
+                        1 / (2 * viewer.source.aspectRatio));
+                viewer.viewport.zoomTo(2, center, true);
+                viewer_is_new = true;
+                /* Ensure we receive update-viewport events, OpenSeadragon
+                   #94 */
+                viewer.drawer.viewer = viewer;
+            });
+            viewer.addHandler("update-viewport", function() {
+                if (viewer_is_new) {
+                    setTimeout(function() {
+                        if (viewer.viewport) {
+                            viewer.viewport.goHome(false);
+                        }
+                    }, 1);
+                    viewer_is_new = false;
+                }
+            });
+        }
+
+        // Load slide
+        viewer.open(image);
+
+    }
+
+    open_slide("{{ slide_obj.pk }}.dzi");
+
+    // CSS doesn't provide a good way to specify a div of height
+    // (100% - height(header))
+    $(window).resize(function() {
+        $('#content').height($(window).height() -
+                    $('#header').outerHeight() - 20);
+    }).resize();
+
+});
+
+</script>    
+  
+{% endblock footer_javascript_page %}

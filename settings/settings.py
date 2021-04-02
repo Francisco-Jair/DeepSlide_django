@@ -150,3 +150,5 @@ STATICFILES_FINDERS = [
 
 # folder for save file dzi
 SLIDE_FOLDER  = os.path.join(STATIC_ROOT, 'open_slide_file')
+
+HISTOSLIDE_SLIDEROOT = BASE_DIR.child('_public', 'slide')
