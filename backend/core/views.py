@@ -21,6 +21,7 @@ class Openslides:
     
     @classmethod
     def insertslide(cls, key, sl):
+        # opts = {'tile_size': settings.DEEPZOOM_TILE_SIZE, 'overlap': settings.DEEPZOOM_OVERLAP}
         opts = {'tile_size': 254, 'overlap': 1}
         with cls._dict_lock:
             cls._slides[key] = sl
